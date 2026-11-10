@@ -1,0 +1,26 @@
+# Render Blueprint — เชื่อมกับ GitHub Repo แล้ว Render จะ build/deploy Backend อัตโนมัติทุกครั้งที่ push
+services:
+  - type: web
+    name: simple-store-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: singapore
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: SUPABASE_URL          # https://<project-ref>.supabase.co
+        sync: false
+      - key: SUPABASE_SERVICE_KEY  # service_role / secret key (ห้ามใส่ใน Frontend)
+        sync: false
+      - key: JWT_SECRET            # Render สุ่มให้เอง (>= 32 ตัวอักษร)
+        generateValue: true
+      - key: ALLOWED_ORIGINS       # เช่น https://your-app.vercel.app,https://*.vercel.app
+        sync: false
+      - key: ADMIN_EMAIL           # บัญชี Admin แรก (สร้างอัตโนมัติตอนเริ่มระบบ)
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SEED_ON_START         # true = ถ้าตาราง products ว่าง ให้ดึงสินค้าจาก fakestoreapi.com
+        value: "true"
